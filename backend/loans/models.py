@@ -1,0 +1,20 @@
+from django.db import models
+from django.conf import settings
+from books.models import Book
+
+class Loan(models.Model):
+    LOAN_STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('returned', 'Returned'),
+        ('overdue', 'Overdue'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    loan_date = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField()
+    return_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=10, choices=LOAN_STATUS_CHOICES, default='active')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.book.title}"
